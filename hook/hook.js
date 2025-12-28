@@ -23,7 +23,7 @@ export const resolve = async (specifier, context, nextResolve) => {
   // !!!!!!!!!! NOTE !!!!!!!!!!
   // There is a bug where calling `console.log` from an asynchronous resolve function does not output to stdout.
   // Therefore, we write logs to a file here instead.
-  writeFileSync('./log.txt', `resolve ${specifier} from ${context.parentURL}\n`, { flag: 'a+' });
+  writeFileSync('./log.txt', `resolve: ${JSON.stringify({ specifier, parentURL: context.parentURL })}\n`, { flag: 'a+' });
 
   if (specifier !== 'vscode' || !context.parentURL) {
     return nextResolve(specifier, context);
