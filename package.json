@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --import ./hook/register.js src/main.cjs"
   },
   "keywords": [],
   "author": "mizdra <pp.mizdra@gmail.com>",

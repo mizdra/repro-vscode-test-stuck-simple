@@ -8,6 +8,7 @@ const { port1, port2 } = new MessageChannel();
  * @param {MessageEvent<{id: string, url: string}>} e
  */
 port1.onmessage = (e) => {
+  console.log(`onmessage: ${JSON.stringify(e.data)}`);
   writeFileSync('./log.txt', `onmessage: ${JSON.stringify(e.data)}\n`, { flag: 'a+' });
   port1.postMessage({
     id: e.data.id,

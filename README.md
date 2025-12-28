@@ -2,44 +2,78 @@
 
 ```console
 $ npm i
-$ npm start
+$ node --import ./hook/register.js src/require-extension.cjs
+# or
+$ node --import ./hook/register.js src/import-extension.js
 ```
+
+## Expected behavior
+
+Both `require-extension.cjs` and `import-extension.js` successfully load the `vscode` module.
+
+```console
+$ node --import ./hook/register.js src/require-extension.cjs
+resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+onmessage: {"id":0,"url":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+vscode module loaded
+$ cat log.txt
+resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+onmessage: {"id":0,"url":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+```
+
+```console
+$ node --import ./hook/register.js src/import-extension.js
+resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+onmessage: {"id":0,"url":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+vscode module loaded
+$ cat log.txt
+resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+onmessage: {"id":0,"url":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+```
+
+## Actual behavior
+
+Environment: macOS 26.1, Apple M1 Pro
 
 ### Node.js 22.21.1
 
-```
-$ npm start
-> module-register-test@1.0.0 start
-> node --import ./hook/register.js src/main.cjs
+`require-extension.cjs` hangs during execution. Additionally, `resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}` is not output to stdout.
 
-^C
+`import-extension.js` works as expected.
+
+```console
+$ node --import ./hook/register.js src/require-extension.cjs
+(hang here...)^C
 $ cat log.txt
-resolve: {"specifier":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/main.cjs"}
 resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
 ```
 
-### Node.js 24.12.0
-
-```
-$ npm start
-> module-register-test@1.0.0 start
-> node --import ./hook/register.js src/main.cjs
-
-^C
-$ cat log.txt
-resolve: {"specifier":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/main.cjs"}
+```console
+$ node --import ./hook/register.js src/import-extension.js
 resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+onmessage: {"id":0,"url":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+vscode module loaded
+$ cat log.txt
+resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+onmessage: {"id":0,"url":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
 ```
 
 ### Node.js 25.2.1
 
-```
-$ npm start
-> module-register-test@1.0.0 start
-> node --import ./hook/register.js src/main.cjs
+`require-extension.cjs` hangs during execution. Additionally, `resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}` is not output to stdout.
 
-^C
+`import-extension.js` will behave the same way.
+
+```console
+$ node --import ./hook/register.js src/require-extension.cjs
+(hang here...)^C
 $ cat log.txt
-resolve: {"specifier":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/main.cjs"}
+resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
+```
+
+```console
+$ node --import ./hook/register.js src/import-extension.js
+(hang here...)^C
+$ cat log.txt
 resolve: {"specifier":"vscode","parentURL":"file:///Users/mizdra/src/github.com/mizdra/repro-vscode-test-hang-simple/src/extension.js"}
 ```
